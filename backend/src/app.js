@@ -11,20 +11,12 @@ const app = express();
 app.disable("x-powered-by");
 app.use(helmet());
 
+
 app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "https://women-tech-competiton-e3jl.vercel.app",
-      env.FRONTEND_ORIGIN,
-    ];
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("Origin not allowed by CORS"));
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://women-tech-competiton-e3jl.vercel.app",
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "X-CSRF-Token"],
