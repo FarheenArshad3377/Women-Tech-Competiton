@@ -10,12 +10,26 @@ import { notFound, errorHandler } from "./middleware/error.middleware.js";
 const app = express();
 app.disable("x-powered-by");
 app.use(helmet());
+
 app.use(cors({
-  origin: env.FRONTEND_ORIGIN,
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://women-tech-competiton-e3jl.vercel.app",
+      env.FRONTEND_ORIGIN,
+    ];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Origin not allowed by CORS"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "X-CSRF-Token"]
+  allowedHeaders: ["Content-Type", "X-CSRF-Token"],
 }));
+
 app.use(express.json({ limit: "20kb" }));
 app.use(cookieParser());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: "draft-7", legacyHeaders: false }));
